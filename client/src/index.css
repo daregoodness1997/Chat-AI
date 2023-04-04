@@ -101,6 +101,7 @@ button:focus-visible {
   text-align: left;
   margin-top: 1rem;
   color: #afbac6;
+  min-height: 72px;
 }
 textarea {
   width: 100%;

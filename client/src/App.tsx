@@ -1,17 +1,34 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { useState, useEffect } from 'react';
+
 import './App.css';
 import { Answer, Button, Question, Textarea } from './components';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [text, setText] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
+  const [question, setQuestion] = useState<string>('');
+  let loadInterval;
 
+  useEffect(() => {
+    const loadingIndicatorFunc = () => {
+      let textContent = '';
+      loadInterval = setInterval(() => {
+        textContent += '.';
+        if (textContent === '....') textContent = '';
+        setText(textContent);
+      }, 600);
+    };
+    loadingIndicatorFunc();
+  }, []);
+
+  console.log('loadiing', text);
   return (
     <div className='App'>
       <div className='box'>
-        <Question label='5 advanced project ideas in react js' />
-        <Answer>5 advanced project ideas in react js </Answer>
+        <Question label={question ? question : 'Enter your question'} />
+
+        <Answer>{response ? response : text}</Answer>
+
         <form className='form'>
           <Textarea placeholder='Send a message...' />
           <Button label='Send' />
