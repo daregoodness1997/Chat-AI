@@ -1,11 +1,12 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string;
+  label?: string;
+  children: React.ReactNode;
 }
 
-const Button: React.FC<Props> = ({ label, ...props }) => {
-  return <button {...props}>{label}</button>;
+const Button: React.FC<Props> = ({ label, children, ...props }) => {
+  return <button {...props}>{children}</button>;
 };
 
 export default Button;
