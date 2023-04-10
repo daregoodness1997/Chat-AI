@@ -7,8 +7,8 @@ function App() {
   const chatRef = useRef<{ scrollTop?: string; scrollHeight?: string }>({});
   const responseRef = useRef(null);
   const [text, setText] = useState<string>('');
-  const [response, setResponse] = useState<string>('');
-  const [fetch, setFetch] = useState<boolean>(false);
+  const [response, setResponse] = useState<{}>({});
+  const [fetchData, setFetchData] = useState<boolean>(false);
   const [question, setQuestion] = useState<string>('');
   const [value, setValue] = useState<string>('');
 
@@ -49,7 +49,24 @@ function App() {
     setQuestion(value);
     chatRef.current.scrollTop = chatRef.current.scrollHeight;
     loadingIndicatorFunc();
-    setFetch(true);
+    setFetchData(true);
+
+    try {
+      const response = await fetch('http://localhost:8080', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: question,
+        }),
+      });
+      setResponse(response.json());
+      setFetchData(false);
+    } catch (err) {
+      console.log(err);
+      setFetchData(true);
+    }
   };
 
   return (
@@ -62,7 +79,7 @@ function App() {
           />
         ) : null}
 
-        {fetch ? <Answer>{response ? response : text}</Answer> : null}
+        {fetchData ? <Answer>Answer</Answer> : null}
 
         <div className='form-box'>
           <form className='form' onSubmit={handleSubmit}>
