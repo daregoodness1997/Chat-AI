@@ -6,8 +6,9 @@ import { Send } from './components/icon';
 function App() {
   const chatRef = useRef<{ scrollTop?: string; scrollHeight?: string }>({});
   const responseRef = useRef(null);
+  // const formRef = useRef<any>('');
   const [text, setText] = useState<string>('');
-  const [response, setResponse] = useState<{}>({});
+  const [response, setResponse] = useState<any>(null);
   const [fetchData, setFetchData] = useState<boolean>(false);
   const [question, setQuestion] = useState<string>('');
   const [value, setValue] = useState<string>('');
@@ -28,8 +29,6 @@ function App() {
     let interval = setInterval(() => {
       if (index < text.length) {
         responseContent += text.charAt(index);
-
-        setResponse(responseContent);
       } else {
         clearInterval(interval);
       }
@@ -61,13 +60,30 @@ function App() {
           prompt: question,
         }),
       });
-      setResponse(response.json());
-      setFetchData(false);
+
+      if (response.ok) {
+        const data = response.json();
+        const passedData = data;
+        setResponse(passedData);
+        setFetchData(false);
+      } else {
+        const data = 'Something went wrong';
+        const passedData = typeText(data);
+
+        setResponse(data);
+        setFetchData(false);
+      }
     } catch (err) {
       console.log(err);
       setFetchData(true);
     }
   };
+
+  // formRef.current.addEventListener('keyup', (e: any) => {
+  //   if (e.keyCode === 13) {
+  //     handleSubmit(e);
+  //   }
+  // });
 
   return (
     <div>
@@ -79,7 +95,9 @@ function App() {
           />
         ) : null}
 
-        {fetchData ? <Answer>Answer</Answer> : null}
+        {response || fetchData ? (
+          <Answer>{fetchData ? text : response}</Answer>
+        ) : null}
 
         <div className='form-box'>
           <form className='form' onSubmit={handleSubmit}>
