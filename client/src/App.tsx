@@ -3,6 +3,11 @@ import { useState, useEffect, SyntheticEvent, useRef } from 'react';
 import { Answer, Button, Question, Textarea } from './components';
 import { Send } from './components/icon';
 
+interface DataProps {
+  id: string;
+  question: string;
+  answer?: string;
+}
 function App() {
   const chatRef = useRef<{ scrollTop?: string; scrollHeight?: string }>({});
   const responseRef = useRef(null);
@@ -12,6 +17,7 @@ function App() {
   const [fetchData, setFetchData] = useState<boolean>(false);
   const [question, setQuestion] = useState<string>('');
   const [value, setValue] = useState<string>('');
+  const [data, setData] = useState<[DataProps] | null>(null);
 
   const loadingIndicatorFunc = () => {
     let textContent = '';
@@ -46,12 +52,15 @@ function App() {
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setQuestion(value);
+    const id = generateUniqueId();
     chatRef.current.scrollTop = chatRef.current.scrollHeight;
     loadingIndicatorFunc();
     setFetchData(true);
 
+    setData([{ id: id, question: value }]);
+
     try {
-      const response = await fetch('http://localhost:8080', {
+      const response = await fetch(import.meta.env.VITE_BASE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,10 +71,11 @@ function App() {
       });
 
       if (response.ok) {
-        const data = response.json();
-        const passedData = data;
-        setResponse(passedData);
+        const data = await response.json();
+
+        setResponse(data);
         setFetchData(false);
+        setValue('');
       } else {
         const data = 'Something went wrong';
         const passedData = typeText(data);
@@ -84,6 +94,8 @@ function App() {
   //     handleSubmit(e);
   //   }
   // });
+
+  console.log('Response', response);
 
   return (
     <div>

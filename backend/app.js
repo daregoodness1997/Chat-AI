@@ -27,13 +27,12 @@ app.post('/', async (req, res) => {
         model: 'text-davinci-003',
         prompt: `${prompt}`,
         temperature: 0,
-        max_tokens: 50,
+        max_tokens: 20,
         top_p: 1,
         frequency_penalty: 0.5,
         presence_penalty: 0,
       })
       .then(res => {
-        console.log(res.data);
         result = res.data;
       });
     res.status(200).json({ status: 'success', data: result });
