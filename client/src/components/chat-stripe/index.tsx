@@ -3,13 +3,13 @@ import { Bot, User } from '../icon';
 
 interface ChatProps {
   isAi?: boolean;
-  value: string;
+  value?: string;
   uniqueId: string;
 }
 
 const ChatStripe: React.FC<ChatProps> = ({ isAi, value, uniqueId }) => {
   return (
-    <div className={`answer-card ${isAi && 'ai'}`}>
+    <div className={` ${isAi ? 'answer-card' : 'question-card '}`}>
       {isAi ? (
         <div className='icon ans'>
           <Bot />

@@ -10,11 +10,22 @@ interface DataProps {
   answer?: string;
 }
 function App() {
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<
+    { uniqueId: string; isAi: boolean; value?: string }[]
+  >([]);
   const [response, setResponse] = useState<any>(null);
   const [value, setValue] = useState<string>('');
-  let loadInterval;
-  const loader = (element: any) => {
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatContainerRef.current?.scrollTo(
+      0,
+      chatContainerRef.current?.scrollHeight
+    );
+  }, [messages]);
+
+  let loadInterval: any;
+  const loader = (element: HTMLElement) => {
     element.textContent = '';
 
     loadInterval = setInterval(() => {
@@ -48,8 +59,6 @@ function App() {
     return `id-${timestamp}-${hexadecimalString}`;
   };
 
-  console.log(messages);
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -65,32 +74,26 @@ function App() {
 
     e.target.reset();
     // to focus scroll to the bottom
-    const chatContainer = document.querySelector('#chat_container');
+    const chatContainer: HTMLElement | null =
+      document.querySelector('#chat_container');
 
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    console.log(chatContainer, 'chat-div');
+
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
     // specific message div
-    const messageDiv = document.getElementById(uniqueId);
+    const messageDiv: HTMLElement | null = document.getElementById(uniqueId);
 
-    // messageDiv.innerHTML = "..."
-    loader(messageDiv);
+    console.log(messageDiv, 'div', uniqueId);
 
-    clearInterval(loadInterval);
-    // @ts-ignore
-    messageDiv.innerHTML = ' ';
+    if (messageDiv) {
+      // messageDiv.innerHTML = "..."
+      loader(messageDiv);
+      clearInterval(loadInterval);
 
-    if (response.ok) {
-      const data = await response.json();
-      const parsedData = data.bot.trim(); // trims any trailing spaces/'\n'
-
-      typeText(messageDiv, parsedData);
-    } else {
-      const err = await response.text();
-
-      // @ts-ignore
-
-      messageDiv.innerHTML = 'Something went wrong';
-      alert(err);
+      messageDiv.innerHTML = ' ';
     }
 
     try {
@@ -117,10 +120,16 @@ function App() {
     }
   };
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as any);
+    }
+  }
   return (
     <div>
       <div className='box'>
-        <div id='chat_container'>
+        <div id='chat_container' ref={chatContainerRef}>
           {messages.map((message, idx) => (
             <ChatStripe {...message} key={idx} />
           ))}
@@ -131,6 +140,7 @@ function App() {
               placeholder='Send a message...'
               onChange={e => setValue(e.target.value)}
               required
+              onKeyDown={handleKeyDown}
             />
             <Button type='submit'>
               <Send />
