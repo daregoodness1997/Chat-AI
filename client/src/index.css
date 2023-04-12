@@ -48,6 +48,13 @@ h1 {
   margin: 0 auto;
 }
 
+.flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
 .question-card {
   width: 100%;
   padding: 1.5rem;
@@ -55,9 +62,6 @@ h1 {
   text-align: left;
   font-weight: 500;
   color: #afbac6;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .question {
@@ -81,9 +85,6 @@ h1 {
   text-align: left;
   color: #afbac6;
   min-height: 72px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .ans {
@@ -108,7 +109,7 @@ textarea::placeholder {
 
 .form-box {
   background-color: #1d2127;
-  max-width: 800px;
+
   margin: 0 auto;
   margin-top: 1rem;
   position: fixed;
@@ -129,4 +130,8 @@ textarea::placeholder {
   background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+.chat-container {
+  margin-bottom: 4rem;
 }

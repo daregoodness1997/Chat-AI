@@ -15,6 +15,7 @@ const ChatStripe: React.FC<ChatProps> = ({
   loading,
 }) => {
   const [text, setText] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
 
   const loadingIndicatorFunc = () => {
     let textContent = '';
@@ -28,19 +29,48 @@ const ChatStripe: React.FC<ChatProps> = ({
     // loading ...
     loadingIndicatorFunc();
   }, [loading]);
+
+  const typeTextFunc = () => {
+    let index = 0;
+    let textContent = '';
+    let interval = setInterval(() => {
+      if (value)
+        if (index < value.length) {
+          textContent += value.charAt(index);
+
+          index++;
+          setResponse(textContent);
+        } else {
+          clearInterval(interval);
+        }
+    }, 20);
+  };
+
+  useEffect(() => {
+    typeTextFunc();
+  }, [value]);
+
+  const renderResponse = () => {
+    if (value && !isAi) return value;
+    if (value === '') return text;
+    if (value && isAi) return response;
+  };
+
   return (
     <div className={` ${isAi ? 'answer-card' : 'question-card '}`}>
-      {isAi ? (
-        <div className='icon ans'>
-          <Bot />
+      <div className='container flex'>
+        {isAi ? (
+          <div className='icon ans'>
+            <Bot />
+          </div>
+        ) : (
+          <div className='icon question'>
+            <User />
+          </div>
+        )}
+        <div className='message' id={uniqueId}>
+          {renderResponse()}
         </div>
-      ) : (
-        <div className='icon question'>
-          <User />
-        </div>
-      )}
-      <div className='message' id={uniqueId}>
-        {loading ? text : value}
       </div>
     </div>
   );
