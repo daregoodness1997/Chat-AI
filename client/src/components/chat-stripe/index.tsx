@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bot, User } from '../icon';
 
 interface ChatProps {
   isAi?: boolean;
   value?: string;
   uniqueId: string;
+  loading?: boolean;
 }
 
-const ChatStripe: React.FC<ChatProps> = ({ isAi, value, uniqueId }) => {
+const ChatStripe: React.FC<ChatProps> = ({
+  isAi,
+  value,
+  uniqueId,
+  loading,
+}) => {
+  const [text, setText] = useState<string>('');
+
+  const loadingIndicatorFunc = () => {
+    let textContent = '';
+    setInterval(() => {
+      textContent += '.';
+      if (textContent === '....') textContent = '';
+      setText(textContent);
+    }, 600);
+  };
+  useEffect(() => {
+    // loading ...
+    loadingIndicatorFunc();
+  }, [loading]);
   return (
     <div className={` ${isAi ? 'answer-card' : 'question-card '}`}>
       {isAi ? (
@@ -20,7 +40,7 @@ const ChatStripe: React.FC<ChatProps> = ({ isAi, value, uniqueId }) => {
         </div>
       )}
       <div className='message' id={uniqueId}>
-        {value}
+        {loading ? text : value}
       </div>
     </div>
   );

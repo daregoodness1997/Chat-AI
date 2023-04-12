@@ -11,10 +11,11 @@ interface DataProps {
 }
 function App() {
   const [messages, setMessages] = useState<
-    { uniqueId: string; isAi: boolean; value?: string }[]
+    { uniqueId: string; isAi: boolean; value?: string; loading?: boolean }[]
   >([]);
   const [response, setResponse] = useState<any>(null);
   const [value, setValue] = useState<string>('');
+  const [text, setText] = useState<string>('');
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,21 +24,6 @@ function App() {
       chatContainerRef.current?.scrollHeight
     );
   }, [messages]);
-
-  let loadInterval: any;
-  const loader = (element: HTMLElement) => {
-    element.textContent = '';
-
-    loadInterval = setInterval(() => {
-      // Update the text content of the loading indicator
-      element.textContent += '.';
-
-      // If the loading indicator has reached three dots, reset it
-      if (element.textContent === '....') {
-        element.textContent = '';
-      }
-    }, 300);
-  };
 
   const typeText = (element: any, text: string) => {
     let index = 0;
@@ -69,7 +55,7 @@ function App() {
     setMessages([
       ...messages,
       { uniqueId: userId, isAi: false, value: value },
-      { uniqueId: uniqueId, isAi: true },
+      { uniqueId: uniqueId, isAi: true, loading: true },
     ]);
 
     e.target.reset();
@@ -81,19 +67,6 @@ function App() {
 
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    // specific message div
-    const messageDiv: HTMLElement | null = document.getElementById(uniqueId);
-
-    console.log(messageDiv, 'div', uniqueId);
-
-    if (messageDiv) {
-      // messageDiv.innerHTML = "..."
-      loader(messageDiv);
-      clearInterval(loadInterval);
-
-      messageDiv.innerHTML = ' ';
     }
 
     try {
@@ -109,6 +82,10 @@ function App() {
 
       if (response.ok) {
         const data = await response.json();
+
+        messages
+          .filter(element => element.uniqueId === uniqueId)
+          .map(message => ({ ...message, value: data, loading: false }));
 
         setResponse(data);
         setValue('');

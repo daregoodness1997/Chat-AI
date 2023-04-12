@@ -23,12 +23,12 @@ Add a GIF or a video showing the application in action.
 2. Navigate to the client directory.
 3. Install the dependencies: `npm install`.
 4. Create a .env file in the root directory of the project and add your base URL.
-   ```VITE_BASE_URL ```
+   `VITE_BASE_URL `
 5. Start the application: `npm run dev`.
 6. Navigate to the backend directory.
 7. Install the dependencies: `npm install`.
 8. Create a .env file in the root directory of the project and add your OpenAI key.
-   ```OPENAI_API_KEY```
+   `OPENAI_API_KEY`
 9. Start the server: `npm run dev`.
 
 ## Usage
