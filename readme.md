@@ -15,7 +15,7 @@ This project was built using the following technologies:
 
 ## Demo
 
-Add a GIF or a video showing the application in action.
+https://chat-ai-pearl.vercel.app/
 
 ## Installation
 
